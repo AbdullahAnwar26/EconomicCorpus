@@ -1,0 +1,1 @@
+{"dataset_id": "ecb_exr_usd_eur_daily_1999_2025", "source_url": "https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A?format=csvdata&startPeriod=1999-01-01&endPeriod=2025-12-31", "status": "failed", "attempts_total": 3, "error": "ValueError: Unexpected or incomplete ECB observation at row 260", "updated_at": "2026-10-09T10:10:13.213995+00:00"}

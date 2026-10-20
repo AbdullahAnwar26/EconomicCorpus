@@ -1,0 +1,90 @@
+{
+  "reviewed_at": "2026-10-09",
+  "dataset_id": "world_bank_wdi:2",
+  "metadata_endpoint_template": "https://api.worldbank.org/v2/indicator/{indicator_id}?format=json",
+  "attempt_cap_per_url": 3,
+  "license_review": {
+    "world_bank_policy_url": "https://datacatalog.worldbank.org/public-licenses",
+    "cc_by_4_0_url": "https://creativecommons.org/licenses/by/4.0/",
+    "policy_finding": "CC BY 4.0 is the default for datasets produced by the World Bank and distributed as open data; the catalog also describes ODbL, externally licensed, custom-license, and restricted microdata cases.",
+    "attribution_requirements": [
+      "Give appropriate credit.",
+      "Link to CC BY 4.0.",
+      "Indicate changes made.",
+      "Do not imply the World Bank endorses the use."
+    ],
+    "unresolved_rights": "Indicator metadata lists external statistical organizations and national providers, but the API does not disclose their individual reuse licenses or establish whether every cited input is covered by the WDI compilation license. Manual rights clearance is required before the proposed batch."
+  },
+  "indicator_metadata": [
+    {
+      "indicator_id": "NY.GDP.MKTP.CD",
+      "name": "GDP (current US$)",
+      "unit_field": "",
+      "source_organization": "Country official statistics, National Statistical Organizations and/or Central Banks; National Accounts data files, OECD; World Bank staff estimates.",
+      "http_status": 200,
+      "attempts": 1
+    },
+    {
+      "indicator_id": "NY.GDP.PCAP.CD",
+      "name": "GDP per capita (current US$)",
+      "unit_field": "",
+      "source_organization": "Country official statistics, National Statistical Organizations and/or Central Banks; National Accounts data files, OECD; World Bank staff estimates.",
+      "http_status": 200,
+      "attempts": 1
+    },
+    {
+      "indicator_id": "FP.CPI.TOTL.ZG",
+      "name": "Inflation, consumer prices (annual %)",
+      "unit_field": "",
+      "source_organization": "International Financial Statistics database, International Monetary Fund (IMF).",
+      "http_status": 200,
+      "attempts": 1
+    },
+    {
+      "indicator_id": "SL.UEM.TOTL.ZS",
+      "name": "Unemployment, total (% of total labor force) (modeled ILO estimate)",
+      "unit_field": "",
+      "source_organization": "ILO Modelled Estimates database (ILOEST), International Labour Organization (ILO).",
+      "http_status": 200,
+      "attempts": 1
+    },
+    {
+      "indicator_id": "SP.POP.TOTL",
+      "name": "Population, total",
+      "unit_field": "",
+      "source_organization": "UN World Population Prospects; National Statistical Offices; Eurostat; UN Statistics Division.",
+      "http_status": 200,
+      "attempts": 1
+    },
+    {
+      "indicator_id": "NE.EXP.GNFS.ZS",
+      "name": "Exports of goods and services (% of GDP)",
+      "unit_field": "",
+      "source_organization": "Country official statistics, National Statistical Offices; National Accounts data files, Central Banks; World Bank staff estimates.",
+      "http_status": 200,
+      "attempts": 1
+    },
+    {
+      "indicator_id": "NE.IMP.GNFS.ZS",
+      "name": "Imports of goods and services (% of GDP)",
+      "unit_field": "",
+      "source_organization": "Country official statistics, National Statistical Offices; National Accounts data files, Central Banks; World Bank staff estimates.",
+      "http_status": 200,
+      "attempts": 1
+    }
+  ],
+  "acquisition_gate": {
+    "status": "held_pending_manual_rights_clearance",
+    "proposed_countries": [
+      "USA",
+      "IND"
+    ],
+    "proposed_years": [
+      "2020",
+      "2021",
+      "2022"
+    ],
+    "maximum_observation_slots": 42,
+    "downloaded_by_metadata_review": false
+  }
+}

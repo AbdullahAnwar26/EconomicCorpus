@@ -1,0 +1,65 @@
+[
+  {
+    "source_id": "economic_source_001",
+    "source_url": "https://statistics.stanford.edu/~tibs/ElemStatLearn/",
+    "final_url": "https://statistics.stanford.edu/~tibs/ElemStatLearn/",
+    "status": "failed",
+    "attempts": 1,
+    "error": "HTTP 404; resource unavailable",
+    "notes": null
+  },
+  {
+    "source_id": "economic_source_003",
+    "source_url": "https://gutenberg.net.au/ebooks03/chap01.html",
+    "final_url": "https://gutenberg.net.au/ebooks03/chap01.html",
+    "status": "failed",
+    "attempts": 1,
+    "error": "HTTP 404; resource unavailable",
+    "notes": null
+  },
+  {
+    "source_id": "economic_source_003",
+    "source_url": "https://gutenberg.net.au/ebooks03/chap02.html",
+    "final_url": "https://gutenberg.net.au/ebooks03/chap02.html",
+    "status": "failed",
+    "attempts": 1,
+    "error": "HTTP 404; resource unavailable",
+    "notes": null
+  },
+  {
+    "source_id": "economic_source_006",
+    "source_url": "https://mises.org/library/book/theory-money-and-credit",
+    "final_url": null,
+    "status": "blocked",
+    "attempts": 0,
+    "error": "The listed Mises URL returned HTTP 403; do not retry or bypass the access restriction.",
+    "notes": "Prior source_verification.json records HTTP 403; no new request made"
+  },
+  {
+    "source_id": "economic_source_007",
+    "source_url": "https://oll.libertyfund.org/title/1063",
+    "final_url": null,
+    "status": "blocked",
+    "attempts": 0,
+    "error": "The listed Liberty Fund URL returned HTTP 403; do not retry or bypass the access restriction.",
+    "notes": "Prior source_verification.json records HTTP 403; no new request made"
+  },
+  {
+    "source_id": "economic_source_010",
+    "source_url": "https://russell-davidson.research.mcgill.ca/textbooks/EIE-davidson-mackinnon-2021.pdf",
+    "final_url": null,
+    "status": "failed",
+    "attempts": 3,
+    "error": "HTTPSConnectionPool(host='russell-davidson.research.mcgill.ca', port=443): Max retries exceeded with url: /textbooks/EIE-davidson-mackinnon-2021.pdf (Caused by NameResolutionError(\"HTTPSConnection(host='russell-davidson.research.mcgill.ca', port=443): Failed to resolve 'russell-davidson.research.mcgill.ca' ([Errno 11002] getaddrinfo failed)\"))",
+    "notes": null
+  },
+  {
+    "source_id": "economic_source_001",
+    "source_url": "http://www-stat.stanford.edu/~tibs/ElemStatLearn/",
+    "final_url": null,
+    "status": "failed",
+    "attempts": 0,
+    "error": "Permanent HTTP failure already recorded; no repeat request made",
+    "notes": "The old Stanford URL returned 404; inspect only the current URL recorded in the manager verification report for an explicitly exposed full-text file."
+  }
+]

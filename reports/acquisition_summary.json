@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-10-20T06:45:00.000000+00:00",
+  "total_manager_sources": 20,
+  "successful_full_text_sources": 9,
+  "partial_sample_sources": 2,
+  "blocked_sources": 1,
+  "failed_sources": 0,
+  "excluded_sources": 2,
+  "duplicates": 99,
+  "total_files": 317,
+  "total_bytes": 173156233,
+  "note": "Updated 2026-10-20: economic_source_006 (Mises, Theory of Money and Credit) acquired as PDF+EPUB via the Mises Institute's open CDN (cdn.mises.org), after the original mises.org/library page remained HTTP 403; moved from blocked to successful_full_text. economic_source_017 gained two publisher-provided sample files (Princeton University Press chapters s7836.pdf/p7836.pdf) alongside its existing sample PDF; it remains partial_sample (not the complete book). Separately, two new non-manager-source supplement collections (economic_source_017_supplement, economic_source_020_supplement) were acquired -- see supplement_sources below; they are tracked outside the 20 manager-source totals above.",
+  "source_counts": {
+    "successful_full_text_ids": [
+      "economic_source_001",
+      "economic_source_004",
+      "economic_source_005",
+      "economic_source_006",
+      "economic_source_008",
+      "economic_source_014",
+      "economic_source_015",
+      "economic_source_016",
+      "economic_source_019"
+    ],
+    "partial_sample_ids": [
+      "economic_source_010",
+      "economic_source_017"
+    ],
+    "blocked_ids": [
+      "economic_source_007"
+    ],
+    "failed_ids": [],
+    "excluded_ids": [
+      "economic_source_009",
+      "economic_source_020"
+    ]
+  },
+  "supplement_sources": {
+    "note": "Supplements to sources 017 and 020, cataloged separately and NOT counted in total_manager_sources/total_files/total_bytes above. They do not change 017's partial_sample or 020's excluded status for the textbooks themselves.",
+    "ids": [
+      "economic_source_017_supplement",
+      "economic_source_020_supplement"
+    ],
+    "total_files": 7,
+    "total_bytes": 4245386,
+    "status": "acquired_and_extracted_complete_as_supplement"
+  }
+}

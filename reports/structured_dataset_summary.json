@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-10-19T07:59:42.305257+00:00",
+  "dataset_ids": [
+    "world_bank_wdi:2"
+  ],
+  "unique_datasets": 1,
+  "unique_dataset_slices": 42,
+  "downloaded_unique_files": 42,
+  "downloaded_bytes": 13231,
+  "unique_records": 42,
+  "missing_values": 0,
+  "normalized_text_characters": 0,
+  "text_character_count_note": "Structured observations are not converted to document text.",
+  "source_manifest": "reports/public_dataset_acquisition_manifest.jsonl"
+}

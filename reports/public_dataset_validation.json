@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-10-09T10:48:01.954015+00:00",
+  "dataset_id": "world_bank_wdi:2",
+  "request_key": "84efb2e562aa299c94e9b3396f84f2114038b72c0cda1ae23913445d0045d7f7",
+  "status": "success",
+  "complete_dataset": false,
+  "pilot_scope": {
+    "country_code": "IND",
+    "indicator_id": "NE.IMP.GNFS.ZS",
+    "year": "2022"
+  },
+  "records": 1,
+  "missing_values": 0,
+  "raw_size_bytes": 319,
+  "raw_sha256": "f4fb3755f44f3e4aa3e1be863786f28c1f5351a1033b08a6d9d3fd6235a54588",
+  "processed_sha256": "cdc5c28e34f68a4feabeecd9ed2597c74ba5bb5ad5835eae627d29c79ced8bcf",
+  "observation_fields_preserved": [
+    "indicator",
+    "country",
+    "countryiso3code",
+    "date",
+    "value",
+    "unit",
+    "obs_status",
+    "decimal"
+  ],
+  "dataset_metadata": {
+    "page": 1,
+    "pages": 1,
+    "per_page": 100,
+    "total": 1,
+    "sourceid": "2",
+    "lastupdated": "2026-10-08"
+  },
+  "license": {
+    "name": "CC BY 4.0 (World Bank-produced dataset default; verify dataset metadata)",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "terms_url": "https://datacatalog.worldbank.org/public-licenses",
+    "status": "default_stated; dataset-specific metadata must be checked before bulk acquisition"
+  },
+  "note": "One narrow API response only; this validates the ingestion path, not full dataset coverage."
+}

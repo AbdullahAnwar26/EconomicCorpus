@@ -1,0 +1,636 @@
+from __future__ import annotations
+
+import argparse
+import csv
+import hashlib
+import json
+import logging
+import os
+import time
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
+from pathlib import Path
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
+
+import requests
+
+import msvcrt
+from contextlib import contextmanager
+from functools import wraps
+
+
+ROOT = Path(__file__).resolve().parents[2]
+RAW_ROOT = ROOT / "data" / "raw"
+STRUCTURED_RAW = RAW_ROOT / "structured" / "world_bank_wdi"
+STRUCTURED_PROCESSED = ROOT / "data" / "processed" / "structured" / "world_bank_wdi"
+MANIFEST = ROOT / "reports" / "public_dataset_acquisition_manifest.jsonl"
+STATUS = ROOT / "reports" / "public_dataset_status.json"
+VALIDATION_REPORT = ROOT / "reports" / "public_dataset_validation.json"
+DATASET_SUMMARY = ROOT / "reports" / "structured_dataset_summary.json"
+FAILURES_REPORT = ROOT / "reports" / "public_dataset_failures.json"
+RIGHTS_REVIEW_REPORT = ROOT / "reports" / "public_dataset_rights_review.csv"
+CANDIDATES_REPORT = ROOT / "reports" / "public_dataset_candidates.json"
+MAX_ATTEMPTS = 3
+CONNECT_TIMEOUT = 10
+READ_TIMEOUT = 30
+MAX_RESPONSE_BYTES = 2 * 1024 * 1024
+MAX_OBSERVATIONS = 100
+USER_AGENT = "EconomicCorpusResearchBot/1.0 (structured public data pilot)"
+logger = logging.getLogger("economic_structured_ingest")
+
+LOCK_FILE = ROOT / "reports" / ".structured_ingest.lock"
+
+
+@contextmanager
+def interprocess_lock():
+    LOCK_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with LOCK_FILE.open("a+b") as stream:
+        stream.seek(0, os.SEEK_END)
+        if stream.tell() == 0:
+            stream.write(b"\0")
+            stream.flush()
+
+        while True:
+            try:
+                stream.seek(0)
+                msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+                break
+            except OSError:
+                time.sleep(0.1)
+
+        try:
+            yield
+        finally:
+            stream.seek(0)
+            msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
+
+
+def locked(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        with interprocess_lock():
+            return func(*args, **kwargs)
+    return wrapper
+
+WORLD_BANK_LICENSE = {
+    "name": "CC BY 4.0 (World Bank-produced dataset default; verify dataset metadata)",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "terms_url": "https://datacatalog.worldbank.org/public-licenses",
+    "status": "default_stated; dataset-specific metadata must be checked before bulk acquisition",
+}
+
+
+def now_utc() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def sha256_bytes(content: bytes) -> str:
+    return hashlib.sha256(content).hexdigest()
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def canonical_url(url: str) -> str:
+    parsed = urlparse(url)
+    query = urlencode(sorted(parse_qsl(parsed.query, keep_blank_values=True)))
+    return urlunparse(parsed._replace(fragment="", query=query))
+
+@locked
+def append_jsonl(path: Path, row: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8", newline="\n") as stream:
+        stream.write(json.dumps(row, ensure_ascii=False) + "\n")
+        stream.flush()
+        os.fsync(stream.fileno())
+
+
+def read_jsonl(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    rows = []
+    with path.open(encoding="utf-8-sig") as stream:
+        for number, line in enumerate(stream, start=1):
+            if not line.strip():
+                continue
+            try:
+                rows.append(json.loads(line))
+            except json.JSONDecodeError as exc:
+                logger.warning("Ignoring malformed manifest line %d: %s", number, exc)
+    return rows
+
+
+def retry_delay(response: requests.Response | None, attempt: int) -> float:
+    delay = min(2 ** (attempt - 1), 20)
+    if response is None:
+        return delay
+    retry_after = response.headers.get("Retry-After")
+    if not retry_after:
+        return delay
+    try:
+        return max(0, float(retry_after))
+    except ValueError:
+        try:
+            when = parsedate_to_datetime(retry_after)
+            if when.tzinfo is None:
+                when = when.replace(tzinfo=timezone.utc)
+            return max(0, (when - datetime.now(timezone.utc)).total_seconds())
+        except (TypeError, ValueError, OverflowError):
+            return delay
+
+
+def validate_payload(content: bytes, content_type: str, max_observations: int) -> tuple[dict, list[dict]]:
+    if "json" not in content_type.lower():
+        raise ValueError(f"Expected JSON content type, received {content_type or 'missing'}")
+    try:
+        payload = json.loads(content)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Invalid JSON response: {exc}") from exc
+    if (
+        not isinstance(payload, list)
+        or len(payload) != 2
+        or not isinstance(payload[0], dict)
+        or not isinstance(payload[1], list)
+    ):
+        raise ValueError("Unexpected World Bank API response shape")
+    metadata, observations = payload
+    required = {
+        "indicator", "country", "countryiso3code", "date",
+        "value", "unit", "obs_status", "decimal",
+    }
+    if not observations:
+        raise ValueError("World Bank response contains no observations")
+    if len(observations) > max_observations:
+        raise ValueError(f"Response has more than the configured {max_observations} observations")
+    for index, row in enumerate(observations):
+        if not isinstance(row, dict) or not required.issubset(row):
+            raise ValueError(f"Observation {index} is missing required structured fields")
+        value = row["value"]
+        if value is not None and (isinstance(value, bool) or not isinstance(value, (int, float))):
+            raise ValueError(f"Observation {index} has a non-numeric value")
+        if not isinstance(row["date"], (str, int)):
+            raise ValueError(f"Observation {index} has an invalid date")
+    total = metadata.get("total")
+    if total is not None and int(total) < len(observations):
+        raise ValueError("API total is smaller than the returned observation count")
+    return metadata, observations
+
+
+def _atomic_write(path: Path, content: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        if sha256_file(path) == sha256_bytes(content):
+            return
+        raise FileExistsError(f"Refusing to overwrite existing different file: {path}")
+    temp = path.with_name(path.name + ".part")
+    try:
+        with temp.open("xb") as stream:
+            stream.write(content)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.rename(temp, path)
+    finally:
+        if temp.exists():
+            temp.unlink()
+
+
+def _existing_hash_index() -> dict[str, Path]:
+    index: dict[str, Path] = {}
+    if not RAW_ROOT.exists():
+        return index
+    for path in RAW_ROOT.rglob("*"):
+        if not path.is_file() or path.name.endswith(".part") or path.name.lower() == "manifest.json":
+            continue
+        try:
+            index.setdefault(sha256_file(path), path)
+        except OSError as exc:
+            logger.warning("Could not hash existing file %s: %s", path, exc)
+    return index
+
+
+class WorldBankIngestor:
+    def __init__(self, session: requests.Session | None = None, sleep=time.sleep):
+        self.session = session or requests.Session()
+        self.session.headers.update({
+            "User-Agent": USER_AGENT,
+            "Accept": "application/json",
+        })
+        self.sleep = sleep
+        self.rows = read_jsonl(MANIFEST)
+        self.hash_index = _existing_hash_index()
+
+    @staticmethod
+    def request_url(country_code: str, indicator_code: str, year: int) -> str:
+        base = (
+            "https://api.worldbank.org/v2/country/"
+            f"{country_code}/indicator/{indicator_code}"
+        )
+        return base + "?" + urlencode({
+            "date": str(year),
+            "format": "json",
+            "per_page": str(MAX_OBSERVATIONS),
+        })
+
+    def _prior_success(self, request_key: str) -> dict | None:
+        for row in reversed(self.rows):
+            if row.get("request_key") != request_key or row.get("status") not in {"success", "duplicate"}:
+                continue
+            raw = ROOT / row.get("raw_path", "")
+            processed = ROOT / row.get("processed_path", "")
+            if (
+                raw.is_file()
+                and processed.is_file()
+                and sha256_file(raw) == row.get("raw_sha256")
+                and sha256_file(processed) == row.get("processed_sha256")
+            ):
+                return row
+        return None
+
+    def _get(self, url: str, attempts_used: int) -> tuple[requests.Response | None, bytes | None, int, str | None]:
+        attempts = 0
+        last_error = None
+        for attempt in range(1, MAX_ATTEMPTS - attempts_used + 1):
+            attempts += 1
+            response = None
+            try:
+                response = self.session.get(
+                    url,
+                    timeout=(CONNECT_TIMEOUT, READ_TIMEOUT),
+                    allow_redirects=True,
+                    stream=True,
+                )
+                if response.status_code in {401, 403, 404}:
+                    return response, None, attempts, f"HTTP {response.status_code}; not retried"
+                if 400 <= response.status_code < 500 and response.status_code not in {408, 429}:
+                    return response, None, attempts, f"HTTP {response.status_code}; request not retried"
+                if response.status_code == 429 or response.status_code >= 500:
+                    last_error = f"HTTP {response.status_code}"
+                    if attempts_used + attempts < MAX_ATTEMPTS:
+                        self.sleep(retry_delay(response, attempts))
+                        continue
+                    return response, None, attempts, last_error
+                response.raise_for_status()
+                chunks = []
+                size = 0
+                for chunk in response.iter_content(64 * 1024):
+                    if not chunk:
+                        continue
+                    size += len(chunk)
+                    if size > MAX_RESPONSE_BYTES:
+                        raise ValueError(f"Response exceeds {MAX_RESPONSE_BYTES} bytes")
+                    chunks.append(chunk)
+                return response, b"".join(chunks), attempts, None
+            except (requests.RequestException, ValueError) as exc:
+                last_error = f"{type(exc).__name__}: {exc}"
+                if attempts_used + attempts < MAX_ATTEMPTS:
+                    self.sleep(retry_delay(response, attempts))
+            finally:
+                if response is not None:
+                    response.close()
+        return None, None, attempts, last_error or "Request failed"
+
+    def acquire(self, country_code: str, indicator_code: str, year: int) -> dict:
+        if not country_code.isalpha() or len(country_code) not in {2, 3}:
+            raise ValueError("Country code must be a two- or three-letter code")
+        if not indicator_code.replace(".", "").isalnum():
+            raise ValueError("Invalid World Bank indicator code")
+        if year < 1960 or year > datetime.now(timezone.utc).year + 1:
+            raise ValueError("Year is outside the supported World Bank API range")
+        url = self.request_url(country_code.upper(), indicator_code.upper(), year)
+        request_key = hashlib.sha256(canonical_url(url).encode("utf-8")).hexdigest()
+        prior = self._prior_success(request_key)
+        if prior:
+            row = {
+                **prior,
+                "status": "skipped_existing",
+                "attempts_this_run": 0,
+                "collected_at": now_utc(),
+                "notes": "Validated files already exist; no request made",
+            }
+            append_jsonl(MANIFEST, row)
+            self.rows.append(row)
+            self._write_status(row, None)
+            return row
+
+        attempts_used = max(
+            (int(item.get("attempts_total") or item.get("attempts") or 0)
+             for item in self.rows if item.get("request_key") == request_key),
+            default=0,
+        )
+        if attempts_used >= MAX_ATTEMPTS:
+            row = self._failure_row(
+                request_key, url, "failed",
+                f"Retry limit already reached ({MAX_ATTEMPTS} attempts)",
+                0, attempts_used,
+            )
+            return row
+
+        response, content, attempts, error = self._get(url, attempts_used)
+        if error or response is None or content is None:
+            status = "blocked" if response is not None and response.status_code in {401, 403} else "failed"
+            return self._failure_row(
+                request_key, url, status, error or "Request failed",
+                attempts, attempts_used + attempts,
+                http_status=response.status_code if response is not None else None,
+            )
+
+        try:
+            metadata, observations = validate_payload(
+                content,
+                response.headers.get("Content-Type", ""),
+                MAX_OBSERVATIONS,
+            )
+            raw_sha = sha256_bytes(content)
+            request_slug = f"{indicator_code.upper()}-{country_code.upper()}-{year}-{request_key[:12]}"
+            raw_path = STRUCTURED_RAW / f"{request_slug}-{raw_sha[:12]}.json"
+            processed_path = STRUCTURED_PROCESSED / f"{request_slug}-{raw_sha[:12]}.jsonl"
+            existing_duplicate = self.hash_index.get(raw_sha)
+            raw_target = existing_duplicate if existing_duplicate else raw_path
+            records = []
+            collected = now_utc()
+            source = {
+                "provider": "World Bank",
+                "dataset_id": f"world_bank_wdi:{metadata.get('sourceid', '2')}",
+                "dataset_name": "World Development Indicators",
+                "indicator_id": indicator_code.upper(),
+                "country_code": country_code.upper(),
+                "year": str(year),
+                "source_url": response.url,
+                "canonical_request_url": canonical_url(url),
+                "license": WORLD_BANK_LICENSE,
+                "collected_at": collected,
+                "raw_path": raw_target.relative_to(ROOT).as_posix(),
+                "raw_sha256": raw_sha,
+            }
+            for observation in observations:
+                records.append({
+                    "record_type": "economic_observation",
+                    "dataset": source,
+                    "observation": observation,
+                })
+            processed_bytes = b"".join(
+                (json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8")
+                for record in records
+            )
+            processed_sha = sha256_bytes(processed_bytes)
+            processed_path.parent.mkdir(parents=True, exist_ok=True)
+            if not existing_duplicate:
+                _atomic_write(raw_path, content)
+                self.hash_index[raw_sha] = raw_path
+            if processed_path.exists():
+                if sha256_file(processed_path) != processed_sha:
+                    raise FileExistsError(f"Refusing to overwrite existing different file: {processed_path}")
+            else:
+                _atomic_write(processed_path, processed_bytes)
+
+            status = "duplicate" if existing_duplicate else "success"
+            row = {
+                "dataset_id": source["dataset_id"],
+                "dataset_name": source["dataset_name"],
+                "indicator_id": indicator_code.upper(),
+                "country_code": country_code.upper(),
+                "year": str(year),
+                "source_url": url,
+                "final_url": response.url,
+                "canonical_request_url": source["canonical_request_url"],
+                "request_key": request_key,
+                "status": status,
+                "http_status": response.status_code,
+                "attempts_this_run": attempts,
+                "attempts_total": attempts_used + attempts,
+                "raw_path": raw_target.relative_to(ROOT).as_posix(),
+                "raw_sha256": raw_sha,
+                "raw_size_bytes": len(content),
+                "processed_path": processed_path.relative_to(ROOT).as_posix(),
+                "processed_sha256": processed_sha,
+                "records": len(observations),
+                "missing_values": sum(1 for item in observations if item["value"] is None),
+                "metadata": metadata,
+                "license": WORLD_BANK_LICENSE,
+                "collected_at": collected,
+                "duplicate_of": existing_duplicate.relative_to(ROOT).as_posix() if existing_duplicate else None,
+                "error": None,
+                "notes": "Bounded single-country, single-indicator, single-year pilot; not a complete dataset",
+            }
+            append_jsonl(MANIFEST, row)
+            self.rows.append(row)
+            self._write_status(row, None)
+            logger.info("%s %s (%d observations)", status.upper(), request_key[:12], len(observations))
+            return row
+        except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
+            row = self._failure_row(
+                request_key, url, "failed",
+                f"{type(exc).__name__}: {exc}",
+                attempts, attempts_used + attempts,
+                http_status=response.status_code,
+            )
+            return row
+        finally:
+            response.close()
+
+    def _failure_row(
+        self, request_key: str, url: str, status: str, error: str,
+        attempts: int, attempts_total: int, http_status: int | None = None,
+    ) -> dict:
+        row = {
+            "dataset_id": "world_bank_wdi:2",
+            "source_url": url,
+            "canonical_request_url": canonical_url(url),
+            "request_key": request_key,
+            "status": status,
+            "http_status": http_status,
+            "attempts_this_run": attempts,
+            "attempts_total": attempts_total,
+            "records": 0,
+            "collected_at": now_utc(),
+            "error": error,
+        }
+        append_jsonl(MANIFEST, row)
+        self.rows.append(row)
+        self._write_status(row, error)
+        logger.warning("%s %s: %s", status.upper(), request_key[:12], error)
+        return row
+
+    @staticmethod
+    @locked
+    def _write_status(row: dict, error: str | None) -> None:
+        STATUS.parent.mkdir(parents=True, exist_ok=True)
+        current = json.loads(STATUS.read_text(encoding="utf-8")) if STATUS.exists() else {}
+        current[row["request_key"]] = {
+            "dataset_id": row.get("dataset_id"),
+            "source_url": row.get("source_url"),
+            "status": row.get("status"),
+            "records": row.get("records", 0),
+            "raw_path": row.get("raw_path"),
+            "raw_sha256": row.get("raw_sha256"),
+            "raw_size_bytes": row.get("raw_size_bytes"),
+            "processed_path": row.get("processed_path"),
+            "attempts_total": row.get("attempts_total", 0),
+            "error": error,
+            "updated_at": now_utc(),
+        }
+        temp = STATUS.with_name(STATUS.name + ".part")
+        temp.write_text(json.dumps(current, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        os.replace(temp, STATUS)
+        WorldBankIngestor._write_review_reports()
+        if row.get("status") in {"success", "duplicate", "skipped_existing"}:
+            WorldBankIngestor._write_dataset_summary()
+            VALIDATION_REPORT.parent.mkdir(parents=True, exist_ok=True)
+            report = {
+                "generated_at": now_utc(),
+                "dataset_id": row.get("dataset_id"),
+                "request_key": row["request_key"],
+                "status": row["status"],
+                "complete_dataset": False,
+                "pilot_scope": {
+                    "country_code": row.get("country_code"),
+                    "indicator_id": row.get("indicator_id"),
+                    "year": row.get("year"),
+                },
+                "records": row.get("records", 0),
+                "missing_values": row.get("missing_values", 0),
+                "raw_size_bytes": row.get("raw_size_bytes"),
+                "raw_sha256": row.get("raw_sha256"),
+                "processed_sha256": row.get("processed_sha256"),
+                "observation_fields_preserved": [
+                    "indicator", "country", "countryiso3code", "date",
+                    "value", "unit", "obs_status", "decimal",
+                ],
+                "dataset_metadata": row.get("metadata"),
+                "license": row.get("license"),
+                "note": "One narrow API response only; this validates the ingestion path, not full dataset coverage.",
+            }
+            VALIDATION_REPORT.write_text(
+                json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+
+    @staticmethod
+    def _write_review_reports() -> None:
+        candidates = (
+            json.loads(CANDIDATES_REPORT.read_text(encoding="utf-8"))
+            if CANDIDATES_REPORT.exists()
+            else {"candidates": []}
+        )
+        RIGHTS_REVIEW_REPORT.parent.mkdir(parents=True, exist_ok=True)
+        with RIGHTS_REVIEW_REPORT.open("w", newline="", encoding="utf-8") as stream:
+            columns = [
+                "rank", "provider", "dataset", "dataset_id", "official_url",
+                "license_terms", "access_status", "priority", "review_items",
+            ]
+            writer = csv.DictWriter(stream, fieldnames=columns)
+            writer.writeheader()
+            for candidate in candidates.get("candidates", []):
+                writer.writerow({
+                    **{key: candidate.get(key) for key in columns if key != "review_items"},
+                    "review_items": " | ".join(candidate.get("review_items", [])),
+                })
+
+        latest = {}
+        for item in read_jsonl(MANIFEST):
+            if item.get("request_key"):
+                latest[item["request_key"]] = item
+        failures = [
+            item for item in latest.values()
+            if item.get("status") in {"failed", "blocked"}
+        ]
+        FAILURES_REPORT.write_text(
+            json.dumps({
+                "generated_at": now_utc(),
+                "failure_count": len(failures),
+                "failures": failures,
+            }, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
+    @staticmethod
+    def _write_dataset_summary() -> None:
+        latest = {}
+        for row in read_jsonl(MANIFEST):
+            key = row.get("request_key")
+            if key:
+                latest[key] = row
+        successful = [
+            row for row in latest.values()
+            if row.get("status") in {"success", "duplicate", "skipped_existing"}
+            and row.get("raw_path") and row.get("processed_path")
+        ]
+        raw_by_hash = {}
+        dataset_ids = set()
+        slice_keys = set()
+        record_keys = set()
+        missing_values = 0
+        for row in successful:
+            raw_path = ROOT / row["raw_path"]
+            processed_path = ROOT / row["processed_path"]
+            if (
+                not raw_path.is_file()
+                or not processed_path.is_file()
+                or sha256_file(raw_path) != row.get("raw_sha256")
+                or sha256_file(processed_path) != row.get("processed_sha256")
+            ):
+                continue
+            raw_by_hash.setdefault(row["raw_sha256"], raw_path.stat().st_size)
+            dataset_ids.add(row.get("dataset_id"))
+            slice_keys.add(row["request_key"])
+            missing_values += int(row.get("missing_values") or 0)
+            with processed_path.open(encoding="utf-8") as stream:
+                for line in stream:
+                    if not line.strip():
+                        continue
+                    item = json.loads(line)
+                    observation = item.get("observation", {})
+                    dataset = item.get("dataset", {})
+                    record_keys.add("|".join(str(part) for part in (
+                        dataset.get("dataset_id"),
+                        dataset.get("indicator_id"),
+                        observation.get("countryiso3code"),
+                        observation.get("date"),
+                    )))
+        result = {
+            "generated_at": now_utc(),
+            "dataset_ids": sorted(item for item in dataset_ids if item),
+            "unique_datasets": len(dataset_ids),
+            "unique_dataset_slices": len(slice_keys),
+            "downloaded_unique_files": len(raw_by_hash),
+            "downloaded_bytes": sum(raw_by_hash.values()),
+            "unique_records": len(record_keys),
+            "missing_values": missing_values,
+            "normalized_text_characters": 0,
+            "text_character_count_note": "Structured observations are not converted to document text.",
+            "source_manifest": MANIFEST.relative_to(ROOT).as_posix(),
+        }
+        DATASET_SUMMARY.parent.mkdir(parents=True, exist_ok=True)
+        DATASET_SUMMARY.write_text(
+            json.dumps(result, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Bounded, resumable World Bank structured-data pilot.")
+    parser.add_argument("--country-code", default="USA")
+    parser.add_argument("--indicator-code", default="NY.GDP.MKTP.CD")
+    parser.add_argument("--year", type=int, default=2021)
+    args = parser.parse_args(argv)
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    row = WorldBankIngestor().acquire(args.country_code, args.indicator_code, args.year)
+    print(json.dumps({
+        "status": row.get("status"),
+        "dataset_id": row.get("dataset_id"),
+        "records": row.get("records", 0),
+        "raw_size_bytes": row.get("raw_size_bytes"),
+        "raw_path": row.get("raw_path"),
+        "processed_path": row.get("processed_path"),
+        "error": row.get("error"),
+    }, ensure_ascii=False, indent=2))
+    return 0 if row.get("status") in {"success", "duplicate", "skipped_existing"} else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

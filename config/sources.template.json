@@ -1,0 +1,27 @@
+﻿{
+  "corpus": "economic",
+  "version": "1.0",
+  "sources": [
+    {
+      "source_id": "example_source",
+      "name": "Example Economic Source",
+      "enabled": false,
+      "base_url": "https://example.com",
+      "source_type": "website",
+      "access_method": "http",
+      "data_types": [
+        "reports",
+        "statistics",
+        "datasets"
+      ],
+      "allowed_formats": [
+        "html",
+        "pdf",
+        "json",
+        "csv",
+        "xml"
+      ],
+      "notes": "Template only. Replace with manager-provided source."
+    }
+  ]
+}

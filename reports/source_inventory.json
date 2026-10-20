@@ -1,0 +1,205 @@
+{
+  "total_sources": 22,
+  "sources": [
+    {
+      "source_id": "economic_source_001",
+      "url": "https://hastie.su.domains/ElemStatLearn/",
+      "enabled": true,
+      "verified": true,
+      "source_type": "free_full_text",
+      "access_method": "direct_download",
+      "notes": "Original URL (www-stat.stanford.edu, later statistics.stanford.edu) returned HTTP 404. Verified 2026-10-19: author Trevor Hastie now hosts the same book (Elements of Statistical Learning, 2nd ed., 12th printing) at hastie.su.domains/ElemStatLearn/, with an explicit copyright notice that Springer authorized the authors to keep it free on the web. PDF acquired from the official download page linked redirect (Google Drive, author-controlled)."
+    },
+    {
+      "source_id": "economic_source_002",
+      "url": "https://archive.org/stream/in.ernet.dli.2015.46585/2015.46585.Road-To-Serf",
+      "enabled": true,
+      "verified": true,
+      "source_type": "rights_unclear_collected_per_owner_authorization",
+      "access_method": "direct_download_owner_authorized",
+      "notes": "Collected under explicit project-owner authorization (2026-10-20) via the Internet Archive's own public 'FULL TEXT' download option (djvu.txt) for this Digital Library of India scan -- same item previously only viewed as the stream/theater landing page. Redistribution rights for this specific OCR text remain unclear; rights_flag retained."
+    },
+    {
+      "source_id": "economic_source_003",
+      "url": "https://gutenberg.net.au/ebooks03/0300071h.html",
+      "enabled": true,
+      "verified": true,
+      "source_type": "rights_unclear_collected_per_owner_authorization",
+      "access_method": "direct_download_owner_authorized",
+      "notes": "Collected under explicit project-owner authorization (2026-10-20). The previously-saved files (0-index.html, economic_source_003.html) were only a chapter table-of-contents / catalog page, not the book. Fetched printall.html (gutenberg.net.au's own single-page full-text edition, linked from the TOC page) which contains the complete book body. Gutenberg Australia publishes this as a public-domain-in-Australia free eBook; rights_flag retained per owner policy pending a jurisdiction-specific legal check."
+    },
+    {
+      "source_id": "economic_source_004",
+      "url": "https://gutenberg.org/ebooks/30107",
+      "enabled": false,
+      "verified": false,
+      "source_type": "unknown",
+      "access_method": "unknown",
+      "notes": "Extracted from manager-provided PDF"
+    },
+    {
+      "source_id": "economic_source_005",
+      "url": "https://gutenberg.org/ebooks/38194",
+      "enabled": false,
+      "verified": false,
+      "source_type": "unknown",
+      "access_method": "unknown",
+      "notes": "Extracted from manager-provided PDF"
+    },
+    {
+      "source_id": "economic_source_006",
+      "url": "https://cdn.mises.org/files/2026-04/The-Theory-of-Money-and-Credit_5.pdf",
+      "enabled": true,
+      "verified": true,
+      "source_type": "free_full_text",
+      "access_method": "direct_download",
+      "notes": "Acquired 2026-10-20: original mises.org/library/book/theory-money-and-credit page remains HTTP 403, but the Mises Institute's own CDN hosts the full PDF and EPUB as open-access publisher downloads (verified HTTP 200, correct content-types). Rights basis: Mises Institute open-access publisher."
+    },
+    {
+      "source_id": "economic_source_007",
+      "url": "https://oll.libertyfund.org/title/1063",
+      "enabled": false,
+      "verified": false,
+      "source_type": "unknown",
+      "access_method": "unknown",
+      "notes": "Extracted from manager-provided PDF"
+    },
+    {
+      "source_id": "economic_source_008",
+      "url": "https://openstax.org/books/principles-economics-3e/pages/preface",
+      "enabled": false,
+      "verified": false,
+      "source_type": "unknown",
+      "access_method": "unknown",
+      "notes": "Extracted from manager-provided PDF"
+    },
+    {
+      "source_id": "economic_source_009",
+      "url": "https://press.princeton.edu/index.php/books/ebook/9780691281971/the-muqaddimah-pdf",
+      "enabled": false,
+      "verified": false,
+      "source_type": "unknown",
+      "access_method": "unknown",
+      "notes": "Extracted from manager-provided PDF"
+    },
+    {
+      "source_id": "economic_source_010",
+      "url": "https://russell-davidson.research.mcgill.ca/textbooks",
+      "enabled": false,
+      "verified": false,
+      "source_type": "unknown",
+      "access_method": "unknown",
+      "notes": "Extracted from manager-provided PDF"
+    },
+    {
+      "source_id": "economic_source_011",
+      "url": "https://web.mit.edu/merolish/Public/books/libertarian/tmc.pdf",
+      "enabled": true,
+      "verified": true,
+      "source_type": "rights_unclear_collected_per_owner_authorization",
+      "access_method": "direct_download_owner_authorized",
+      "notes": "Collected under explicit project-owner authorization (2026-10-20). MIT-hosted PDF confirmed distinct from the official Mises Institute edition already in source_006 (different SHA-256, different translation/pagination). Redistribution authorization for this MIT-hosted mirror remains unconfirmed; rights_flag retained."
+    },
+    {
+      "source_id": "economic_source_012",
+      "url": "https://www.econlib.org/library/Buchanan/buchCv3.html",
+      "enabled": true,
+      "verified": true,
+      "source_type": "rights_unclear_collected_per_owner_authorization",
+      "access_method": "direct_download_owner_authorized",
+      "notes": "Collected under explicit project-owner authorization (2026-10-20). The originally saved economic_source_012.html was only Econlib's Foreword+Preface+TOC landing page (~20K chars); the actual book is served by Econlib's JS chapter_num=N reader. Fetched and concatenated all 23 chapter_num pages directly from econlib.org (no bypass) to assemble the genuine complete text. Liberty Fund/Econlib copyright notice on file; redistribution unclear; rights_flag retained."
+    },
+    {
+      "source_id": "economic_source_013",
+      "url": "https://www.econlib.org/library/Mill/mlP.html",
+      "enabled": true,
+      "verified": true,
+      "source_type": "rights_unclear_collected_per_owner_authorization",
+      "access_method": "direct_download_owner_authorized",
+      "notes": "Collected under explicit project-owner authorization (2026-10-20). The originally saved economic_source_013.html was only Econlib's Introduction/Preface/TOC landing page (~52K chars); the actual book is served by Econlib's JS chapter_num=N reader. Fetched and concatenated all 77 chapter_num pages directly from econlib.org (no bypass) to assemble the genuine complete text. Redistribution unclear; rights_flag retained."
+    },
+    {
+      "source_id": "economic_source_014",
+      "url": "https://www.gutenberg.org/ebooks/15776",
+      "enabled": false,
+      "verified": false,
+      "source_type": "unknown",
+      "access_method": "unknown",
+      "notes": "Extracted from manager-provided PDF"
+    },
+    {
+      "source_id": "economic_source_015",
+      "url": "https://www.gutenberg.org/ebooks/3300",
+      "enabled": false,
+      "verified": false,
+      "source_type": "unknown",
+      "access_method": "unknown",
+      "notes": "Extracted from manager-provided PDF"
+    },
+    {
+      "source_id": "economic_source_016",
+      "url": "https://www.gutenberg.org/ebooks/33310",
+      "enabled": false,
+      "verified": false,
+      "source_type": "unknown",
+      "access_method": "unknown",
+      "notes": "Extracted from manager-provided PDF"
+    },
+    {
+      "source_id": "economic_source_017",
+      "url": "https://www.johnhcochrane.com/s/samplechapters.pdf",
+      "enabled": false,
+      "verified": false,
+      "source_type": "unknown",
+      "access_method": "unknown",
+      "notes": "Extracted from manager-provided PDF"
+    },
+    {
+      "source_id": "economic_source_018",
+      "url": "https://www.library.dartmouth.edu/digital/digital-collections/limits-growth",
+      "enabled": true,
+      "verified": true,
+      "source_type": "rights_unclear_collected_per_owner_authorization",
+      "access_method": "direct_download_owner_authorized",
+      "notes": "Collected under explicit project-owner authorization (2026-10-20). The Dartmouth digital-collections page was a catalog/landing page; it links directly to a genuine full-text PDF (meadows_ltg-001.pdf, 211 pages) hosted on collections.dartmouth.edu, which was fetched and verified as real book content. Redistribution unclear; rights_flag retained."
+    },
+    {
+      "source_id": "economic_source_019",
+      "url": "https://www.marxists.org/archive/marx/works/1867-c1/",
+      "enabled": false,
+      "verified": false,
+      "source_type": "unknown",
+      "access_method": "unknown",
+      "notes": "Extracted from manager-provided PDF"
+    },
+    {
+      "source_id": "economic_source_020",
+      "url": "https://www.mheducation.com/highered/product/Advanced-Macroeconomics",
+      "enabled": false,
+      "verified": false,
+      "source_type": "unknown",
+      "access_method": "unknown",
+      "notes": "Extracted from manager-provided PDF"
+    },
+    {
+      "source_id": "economic_source_017_supplement",
+      "url": "https://www.johnhcochrane.com/s",
+      "enabled": true,
+      "verified": true,
+      "source_type": "free_full_text_supplement",
+      "access_method": "direct_download",
+      "supplement_of": "economic_source_017",
+      "notes": "Separate labeled supplement collection for source 017 (Cochrane): author-hosted free lecture notes (Time Series MOOC Long Notes, Time Series book draft, GMM Notes, Bond Notes 1/2, Utility Lecture Notes), all verified HTTP 200 application/pdf before download on 2026-10-20. Does not complete or replace source 017's sample-only textbook status."
+    },
+    {
+      "source_id": "economic_source_020_supplement",
+      "url": "https://eml.berkeley.edu/~dromer/papers/Romer%20Short-Run%20Fluctuations%20January2018.pdf",
+      "enabled": true,
+      "verified": true,
+      "source_type": "free_full_text_supplement",
+      "access_method": "direct_download",
+      "supplement_of": "economic_source_020",
+      "notes": "Separate labeled supplement for source 020 (Romer): author-hosted free working paper 'Short-Run Fluctuations' (January 2018), verified HTTP 200 application/pdf before download on 2026-10-20. Source 020's textbook itself remains excluded (paid-only, McGraw-Hill)."
+    }
+  ]
+}

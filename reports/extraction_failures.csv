@@ -1,0 +1,2 @@
+source_id,source_url,source_path,source_sha256,file_format,error,extracted_at
+economic_source_019,https://www.marxists.org/archive/marx/works/1867-c1/structure/capital-structure.htm,data/raw/crawled/www_marxists_org/718e924f67998fdb.html,8e0d897938cd4a39d348fe75284782a7e63c182f9d448033d5de71a339260a8c,html,ValueError: HTML yielded only 43 readable characters,2026-10-09T08:28:46.978884+00:00

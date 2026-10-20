@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-10-20T07:31:02.574938+00:00",
+  "eligible_file_candidates_this_run": 587,
+  "current_run_results": {},
+  "manifest_latest_status_counts": {
+    "success": 417,
+    "duplicate_content": 190,
+    "failed": 1
+  },
+  "unique_normalized_records": 417,
+  "unique_source_files_successfully_extracted": 417,
+  "duplicate_content_files": 190,
+  "failed_extractions": 1,
+  "normalized_text_characters": 28832752,
+  "normalized_jsonl": "data/processed/normalized_corpus.jsonl",
+  "extraction_manifest": "data/processed/extraction_manifest.jsonl",
+  "extraction_failures_csv": "reports/extraction_failures.csv",
+  "rights_review_csv": "reports/rights_review.csv",
+  "eligible_source_ids": [
+    "economic_source_001",
+    "economic_source_004",
+    "economic_source_005",
+    "economic_source_008",
+    "economic_source_010",
+    "economic_source_014",
+    "economic_source_015",
+    "economic_source_016",
+    "economic_source_017",
+    "economic_source_019"
+  ],
+  "rights_unclear_or_paid_sources_not_extracted": [
+    "economic_source_002",
+    "economic_source_003",
+    "economic_source_009",
+    "economic_source_011",
+    "economic_source_012",
+    "economic_source_013",
+    "economic_source_018",
+    "economic_source_020"
+  ],
+  "note": "Unclear-rights and paid/sample-only complete-work sources were excluded; Cochrane sample pages are retained only as a sample record. UPDATE 2026-10-20: the 6 sources listed above under \"rights_unclear_or_paid_sources_not_extracted\" (002,003,011,012,013,018) have in fact now been extracted into normalized_corpus.jsonl and tagged rights_flag=rights_unclear_collected_per_owner_authorization, per explicit project-owner authorization to collect rights-unclear sources for the internal research corpus. That list name is a residual artifact of the automatic-eligibility pipeline (ELIGIBLE_SOURCE_IDS in batch_extract.py intentionally still excludes them from the automatic run); see reports/manager_source_audit.csv for the authoritative per-source status. economic_source_009 and economic_source_020 remain genuinely not extracted (excluded, no free access).",
+  "rights_unclear_sources_collected_under_owner_authorization_2026_10_20": [
+    "economic_source_002",
+    "economic_source_003",
+    "economic_source_011",
+    "economic_source_012",
+    "economic_source_013",
+    "economic_source_018"
+  ]
+}

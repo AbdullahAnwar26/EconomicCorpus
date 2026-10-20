@@ -1,0 +1,98 @@
+Economics Books: Free PDF / Full-Text Links
+Compiled 2026-10-08. Links were found by web search and not all were opened; verify each before relying on it. Check
+copyright rules in your country.
+1. Free, legal full text
+Book
+Link / source
+Smith, Wealth of Nations (1776)
+https://www.gutenberg.org/ebooks/3300
+Project Gutenberg #3300
+Smith, Wealth of Nations (Garnier ed.)
+https://gutenberg.org/ebooks/38194
+Project Gutenberg #38194
+Ricardo, Principles of Political
+Economy and Taxation (1817)
+https://www.gutenberg.org/ebooks/33310
+Project Gutenberg #33310
+Marx, Capital Vol. I (1867)
+https://www.marxists.org/archive/marx/works/1867-c1/
+Marxists Internet Archive (PDF available on page)
+Mill, Principles of Political Economy
+(1848)
+https://www.econlib.org/library/Mill/mlP.html
+Econlib full text (Ashley ed.)
+Mill, Principles (abridged, 1885)
+https://gutenberg.org/ebooks/30107
+Project Gutenberg #30107 (abridgment only)
+Keynes, General Theory (1936)
+https://gutenberg.net.au/ebooks03/0300071h.html
+Project Gutenberg Australia (public domain in Australia; check your country)
+Keynes, Economic Consequences of
+the Peace (1919)
+https://www.gutenberg.org/ebooks/15776
+Project Gutenberg #15776
+OpenStax Principles of Economics 3e
+(free alternative to Mankiw)
+https://openstax.org/books/principles-economics-3e/pages/preface
+OpenStax (PDF download on book page)
+Hastie, Tibshirani, Friedman,
+Elements of Statistical Learning
+http://www-stat.stanford.edu/~tibs/ElemStatLearn/
+Authors' Stanford page (free PDF; page not confirmed live)
+Davidson & MacKinnon, Econometric
+Theory and Methods (2004)
+https://russell-davidson.research.mcgill.ca/textbooks
+Author-hosted free PDF
+Meadows et al., Limits to Growth
+(1972)
+https://www.library.dartmouth.edu/digital/digital-collections/limits-growth
+Dartmouth Library digital collection (full-text link not confirmed)
+2. Readable online, copyright / redistribution status unclear
+Book
+Link / source
+Buchanan & Tullock, Calculus of
+Consent (1962)
+https://www.econlib.org/library/Buchanan/buchCv3.html
+Econlib HTML (still copyrighted)
+Buchanan & Tullock, Calculus of
+Consent (PDF)
+https://oll.libertyfund.org/title/1063
+Online Library of Liberty
+Mises, Theory of Money and Credit
+(1912)
+https://mises.org/library/book/theory-money-and-credit
+Mises.org online book
+Mises, Theory of Money and Credit
+(PDF)
+https://web.mit.edu/merolish/Public/books/libertarian/tmc.pdf
+MIT-hosted PDF (authorization unconfirmed)
+Hayek, Road to Serfdom (1944)
+https://archive.org/stream/in.ernet.dli.2015.46585/2015.46585.Road-To-Serf
+dom_djvu.txt
+archive.org OCR scan (status unclear; prefer library loan)
+3. Sample chapters or paid editions only
+
+Book
+Link / source
+Cochrane, Asset Pricing
+https://www.johnhcochrane.com/s/samplechapters.pdf
+Author's sample chapters
+Romer, Advanced Macroeconomics
+https://www.mheducation.com/highered/product/Advanced-Macroeconomics
+-Romer.html
+Publisher page (sample chapter)
+Ibn Khaldun, Muqaddimah (Rosenthal
+tr.)
+https://press.princeton.edu/index.php/books/ebook/9780691281971/the-muq
+addimah-pdf
+Princeton UP (paid ebook; no free PDF found)
+4. No legitimate free PDF found
+Samuelson & Nordhaus; Mankiw; Varian; Blanchard; Wooldridge; Simon & Blume; Mas-Colell et al.; Sargent; Blanchard
+& Fischer; Greene; Brockwell & Davis; Hamilton; Todaro & Smith; Banerjee & Duflo; Easterly; Ray; Weil; Salvatore;
+Krugman & Obstfeld; Brealey & Myers; Fabozzi; Bodie/Kane/Marcus; Gruber; Stiglitz; Gibbons; Fudenberg & Tirole;
+Tirole; Carlton & Perloff; Borjas; Kolstad; Folland et al.; Schumpeter; Kindleberger; Friedman (Capitalism and Freedom;
+Monetary History); Barro & Sala-i-Martin; Walsh; Mishkin; Woodford; Stock & Watson; Angrist & Pischke; Piketty;
+Graeber; Kahneman; Thaler & Sunstein; Sen; Sachs; North; Chapra; Abdel Karim & Wilson; Ashraf & Zulkhibri; Varian
+(Big Data).
+Legal alternatives: university library e-books, Libby/OverDrive, Internet Archive lending library, OpenStax, LibreTexts,
+QuantEcon, and author-hosted lecture notes.

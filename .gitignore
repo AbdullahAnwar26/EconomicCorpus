@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+data/raw/
+data/downloads/
+logs/
+*.bak-*
+.structured_ingest.lock
+*.backup_*
+*.bak

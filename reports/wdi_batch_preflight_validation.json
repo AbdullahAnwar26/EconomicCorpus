@@ -1,0 +1,83 @@
+{
+  "tested_at": "2026-10-09T14:36:58+05:30",
+  "purpose": "API schema and pagination preflight only; no batch acquisition",
+  "dataset_id": "world_bank_wdi:2",
+  "indicator_id": "NY.GDP.MKTP.CD",
+  "indicator_name": "GDP (current US$)",
+  "countries": [
+    "USA",
+    "IND"
+  ],
+  "date_range": "2020:2022",
+  "requested_years": [
+    "2020",
+    "2021",
+    "2022"
+  ],
+  "page_size": 5,
+  "requests": [
+    {
+      "url": "https://api.worldbank.org/v2/country/USA;IND/indicator/NY.GDP.MKTP.CD?date=2020%3A2022&format=json&per_page=5&page=1",
+      "http_status": 200,
+      "attempts": 1,
+      "response_bytes": 1126,
+      "metadata": {
+        "page": 1,
+        "pages": 2,
+        "per_page": 5,
+        "total": 6,
+        "sourceid": "2",
+        "lastupdated": "2026-10-08"
+      }
+    },
+    {
+      "url": "https://api.worldbank.org/v2/country/USA;IND/indicator/NY.GDP.MKTP.CD?date=2020%3A2022&format=json&per_page=5&page=2",
+      "http_status": 200,
+      "attempts": 1,
+      "response_bytes": 300,
+      "metadata": {
+        "page": 2,
+        "pages": 2,
+        "per_page": 5,
+        "total": 6,
+        "sourceid": "2",
+        "lastupdated": "2026-10-08"
+      }
+    }
+  ],
+  "validation": {
+    "observation_count": 6,
+    "distinct_country_year_keys": 6,
+    "countries_returned": [
+      "IND",
+      "USA"
+    ],
+    "years_returned": [
+      "2020",
+      "2021",
+      "2022"
+    ],
+    "indicator_ids_returned": [
+      "NY.GDP.MKTP.CD"
+    ],
+    "required_fields_present": [
+      "indicator",
+      "country",
+      "countryiso3code",
+      "date",
+      "value",
+      "unit",
+      "obs_status",
+      "decimal"
+    ],
+    "missing_values": 0,
+    "unit_fields": [
+      ""
+    ],
+    "pagination_total_consistent": true,
+    "raw_response_files_saved": false,
+    "corpus_records_written": false,
+    "result": "passed"
+  },
+  "gate": "The seven-indicator batch remains held pending manual clearance for cited upstream source rights."
+}

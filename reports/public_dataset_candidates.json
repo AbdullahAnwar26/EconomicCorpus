@@ -1,0 +1,288 @@
+{
+  "generated_at": "2026-10-09",
+  "scope": "Official economic datasets considered for a separately structured corpus expansion. No bulk download is authorized by this plan.",
+  "ranking_method": "Ranked qualitatively by economic usefulness, potential volume, official provenance, access reliability, licensing clarity, and implementation cost. Unverified size and licensing details are marked for review rather than inferred.",
+  "candidates": [
+    {
+      "rank": 1,
+      "provider": "World Bank",
+      "dataset": "World Development Indicators (WDI)",
+      "dataset_id": "world_bank_wdi:2",
+      "official_url": "https://databank.worldbank.org/source/world-development-indicators",
+      "api_documentation": "https://datahelpdesk.worldbank.org/knowledgebase/articles/889386-developer-information-overview",
+      "license_terms": "World Bank says CC BY 4.0 is the default for datasets it produces and distributes as open data; dataset catalog labels may specify other licenses. Confirm each dataset's license metadata before broad collection; include attribution and do not imply World Bank endorsement.",
+      "license_url": "https://datacatalog.worldbank.org/public-licenses",
+      "format": "Indicators API JSON/XML; DataBank downloads include CSV/Excel/ZIP options",
+      "approximate_size": "The 2020-2022 USA/India GDP preflight was 1,426 bytes over two pages; full WDI bulk size not verified and may be large.",
+      "update_frequency": "Indicator-specific; API reports a dataset last-updated date. Verify before each acquisition.",
+      "geographic_coverage": "Global economies, multiple indicators, annual and some higher-frequency series",
+      "download_method": "Documented Indicators API for bounded queries; official DataBank bulk export only after archive size and scope are validated.",
+      "access_status": "Documented API tested with USA and India over 2020-2022 for GDP: 6 observations across 2 pages, all country-year keys unique, no missing values. Metadata retrieved for all 7 proposed indicators. No expansion records were acquired; batch is on hold.",
+      "priority": "pilot",
+      "review_items": [
+        "World Bank states CC BY 4.0 is the default for World Bank-produced open datasets, but dataset catalog entries may use ODbL, external/custom terms, or restricted microdata licenses.",
+        "Indicator metadata cites upstream national agencies, OECD, IMF, ILO, UN, and Eurostat; their rights are not exposed by the Indicators API. Obtain manual confirmation that WDI licensing covers the cited inputs before batch acquisition or redistribution.",
+        "The API unit field is empty for all 7 indicators in metadata; preserve it verbatim and also retain indicator names/source notes as semantic measurement descriptions.",
+        "Attribution must credit the World Bank, link CC BY 4.0, identify changes, avoid implying endorsement, and preserve indicator-level upstream sourceOrganization provenance."
+      ],
+      "proposed_batch": {
+        "countries": ["USA", "IND"],
+        "years": ["2020", "2021", "2022"],
+        "indicators": [
+          {"id": "NY.GDP.MKTP.CD", "name": "GDP (current US$)"},
+          {"id": "NY.GDP.PCAP.CD", "name": "GDP per capita (current US$)"},
+          {"id": "FP.CPI.TOTL.ZG", "name": "Inflation, consumer prices (annual %)"},
+          {"id": "SL.UEM.TOTL.ZS", "name": "Unemployment, total (% of total labor force) (modeled ILO estimate)"},
+          {"id": "SP.POP.TOTL", "name": "Population, total"},
+          {"id": "NE.EXP.GNFS.ZS", "name": "Exports of goods and services (% of GDP)"},
+          {"id": "NE.IMP.GNFS.ZS", "name": "Imports of goods and services (% of GDP)"}
+        ],
+        "maximum_observation_slots": 42,
+        "status": "proposed; blocked pending manual rights clearance",
+        "preflight_test": {
+          "indicator": "NY.GDP.MKTP.CD",
+          "countries": ["USA", "IND"],
+          "years": ["2020", "2021", "2022"],
+          "page_size": 5,
+          "observations": 6,
+          "pages": 2,
+          "response_bytes": 1426,
+          "missing_values": 0
+        }
+      },
+      "indicator_metadata_review": [
+        {
+          "id": "NY.GDP.MKTP.CD",
+          "name": "GDP (current US$)",
+          "unit": "",
+          "source_organization": "Country official statistics, National Statistical Organizations and/or Central Banks; OECD national accounts data files; World Bank staff estimates."
+        },
+        {
+          "id": "NY.GDP.PCAP.CD",
+          "name": "GDP per capita (current US$)",
+          "unit": "",
+          "source_organization": "Country official statistics, National Statistical Organizations and/or Central Banks; OECD national accounts data files; World Bank staff estimates."
+        },
+        {
+          "id": "FP.CPI.TOTL.ZG",
+          "name": "Inflation, consumer prices (annual %)",
+          "unit": "",
+          "source_organization": "International Financial Statistics database, International Monetary Fund (IMF)."
+        },
+        {
+          "id": "SL.UEM.TOTL.ZS",
+          "name": "Unemployment, total (% of total labor force) (modeled ILO estimate)",
+          "unit": "",
+          "source_organization": "ILO Modelled Estimates database (ILOEST), International Labour Organization (ILO)."
+        },
+        {
+          "id": "SP.POP.TOTL",
+          "name": "Population, total",
+          "unit": "",
+          "source_organization": "UN World Population Prospects; National Statistical Offices; Eurostat; UN Statistics Division."
+        },
+        {
+          "id": "NE.EXP.GNFS.ZS",
+          "name": "Exports of goods and services (% of GDP)",
+          "unit": "",
+          "source_organization": "Country official statistics and National Statistical Offices; central bank national accounts; World Bank staff estimates."
+        },
+        {
+          "id": "NE.IMP.GNFS.ZS",
+          "name": "Imports of goods and services (% of GDP)",
+          "unit": "",
+          "source_organization": "Country official statistics and National Statistical Offices; central bank national accounts; World Bank staff estimates."
+        }
+      ],
+      "rights_status": "unresolved_upstream_inputs_manual_review_required",
+      "preflight_report": "reports/wdi_batch_preflight_validation.json",
+      "metadata_review_report": "reports/wdi_indicator_metadata_review.json"
+    },
+    {
+      "rank": 2,
+      "provider": "International Monetary Fund",
+      "dataset": "World Economic Outlook (WEO); International Financial Statistics (IFS)",
+      "dataset_id": "imf_weo; imf_ifs",
+      "official_url": "https://www.imf.org/en/Data",
+      "api_documentation": "https://data.imf.org/en/Resource-Pages/IMF-API",
+      "license_terms": "Dataset-specific reuse/redistribution terms not verified in this audit. Review each dataset's terms and attribution before collection.",
+      "format": "Public database downloads and SDMX 2.1/3.0 API formats; exact export options vary by dataset.",
+      "approximate_size": "Medium to large; exact current archive size not verified.",
+      "update_frequency": "WEO is produced twice per year; other IMF datasets have their own release schedules.",
+      "geographic_coverage": "Global member countries and selected aggregates",
+      "download_method": "Official IMF Data portal downloads or documented SDMX API; API exploration page directs users to sign in, so do not automate authenticated access.",
+      "access_status": "Official dataset portal and API documentation reviewed; no data downloaded.",
+      "priority": "high",
+      "review_items": [
+        "Confirm public unauthenticated endpoints and dataset-specific terms.",
+        "Validate unit, frequency, country, and series dimensions from SDMX metadata."
+      ]
+    },
+    {
+      "rank": 3,
+      "provider": "U.S. Bureau of Economic Analysis",
+      "dataset": "National Income and Product Accounts (NIPA), Regional, International",
+      "dataset_id": "bea_nipa",
+      "official_url": "https://www.bea.gov/data",
+      "api_documentation": "https://apps.bea.gov/api/_pdf/bea_web_service_api_user_guide.pdf",
+      "license_terms": "Public official statistics; specific reuse/redistribution terms were not conclusively verified in this audit. Review notices and third-party components before bulk redistribution.",
+      "format": "BEA API JSON/XML; CSV/XLS downloads vary by table.",
+      "approximate_size": "Medium across selected accounts; a complete multi-account archive size was not verified.",
+      "update_frequency": "Table-specific, often quarterly or annually.",
+      "geographic_coverage": "United States national, regional, and international accounts",
+      "download_method": "Documented API; API key is required, so use only an authorized key supplied through local configuration.",
+      "access_status": "API registration page reviewed; no key used and no data downloaded.",
+      "priority": "high",
+      "review_items": [
+        "Confirm reuse terms and use a locally configured authorized API key.",
+        "Preserve table descriptions, line codes, units, and revision/vintage metadata."
+      ]
+    },
+    {
+      "rank": 4,
+      "provider": "U.S. Census Bureau",
+      "dataset": "County Business Patterns (CBP) and Economic Census",
+      "dataset_id": "census_cbp; census_economic_census",
+      "official_url": "https://www.census.gov/data/data-tools/cbp.html",
+      "api_documentation": "https://www.census.gov/data/developers/data-sets/cbp-zbp/cbp-api.html",
+      "license_terms": "The reviewed Census terms permit use of Census Bureau API data and prohibit re-identification. Whether those terms authorize redistribution of the separate CBP bulk ZIP was not established; no acquisition is authorized pending dataset-specific terms.",
+      "license_url": "https://www.census.gov/data/developers/about/terms-of-service.html",
+      "format": "API JSON; 2023 county bulk file is a ZIP archive containing a CSV table.",
+      "approximate_size": "Large for nationwide county-by-industry tables; exact current release size not verified.",
+      "update_frequency": "CBP annual; Economic Census approximately every five years.",
+      "geographic_coverage": "United States, down to county and industry detail depending on table.",
+      "download_method": "Official 2023 county ZIP URL identified; bulk acquisition held until dataset-specific reuse terms are verified.",
+      "access_status": "Official release page and bulk ZIP URL identified; ZIP was not downloaded. Census API terms were reviewed, but their application to reuse/redistribution of the separate bulk file remains unclear.",
+      "priority": "high",
+      "review_items": [
+        "Preserve suppression and disclosure-protection flags.",
+        "Confirm terms applicable to the separate bulk ZIP, including redistribution, before acquisition.",
+        "The Census terms prohibit using or combining data to identify a respondent or establishment."
+      ]
+    },
+    {
+      "rank": 5,
+      "provider": "Organisation for Economic Co-operation and Development",
+      "dataset": "OECD SDMX statistical datasets",
+      "dataset_id": "oecd_sdmx",
+      "official_url": "https://data-explorer.oecd.org/",
+      "api_documentation": "https://sdmx.oecd.org/public/rest/",
+      "license_terms": "Dataset-specific reuse terms need review; do not infer blanket redistribution permission.",
+      "format": "SDMX-CSV, SDMX-JSON, and other SDMX formats, depending on endpoint.",
+      "approximate_size": "Large and dataset-dependent.",
+      "update_frequency": "Dataset-specific, often monthly, quarterly, or annual.",
+      "geographic_coverage": "OECD members and partner economies, depending on dataset.",
+      "download_method": "Documented public SDMX REST API or official exports.",
+      "access_status": "Public API request returned HTTP 403 in this audit; no retry or access-control workaround attempted.",
+      "priority": "medium",
+      "review_items": [
+        "Confirm permitted access and terms through published documentation before future requests.",
+        "Do not retry the observed 403 via alternate routes or hosts."
+      ]
+    },
+    {
+      "rank": 6,
+      "provider": "Federal Reserve Bank of St. Louis",
+      "dataset": "FRED / ALFRED economic and financial series",
+      "dataset_id": "fred_series",
+      "official_url": "https://fred.stlouisfed.org/",
+      "api_documentation": "https://fred.stlouisfed.org/docs/api/fred/",
+      "license_terms": "FRED API terms warn that series may be owned by third parties. Copyright-marked series require permission from the data owner before use beyond personal use; API availability does not grant redistribution rights.",
+      "license_url": "https://fred.stlouisfed.org/docs/api/terms_of_use.html",
+      "format": "FRED API JSON/XML; CSV downloads vary by series.",
+      "approximate_size": "Large across series and vintages; not measured.",
+      "update_frequency": "Series-specific, including daily, weekly, monthly, quarterly, and annual.",
+      "geographic_coverage": "United States and international, depending on the underlying source.",
+      "download_method": "Documented API requiring a locally supplied API key; screen each series' notes and source before use.",
+      "access_status": "Official API terms reviewed; no series downloaded.",
+      "priority": "medium",
+      "review_items": [
+        "Do not include copyrighted series in redistributed corpus without data-owner permission.",
+        "Preserve source, units, seasonal adjustment, frequency, and ALFRED vintage when applicable."
+      ]
+    },
+    {
+      "rank": 7,
+      "provider": "U.S. Bureau of Labor Statistics",
+      "dataset": "Consumer Price Index, employment, productivity, and related series",
+      "dataset_id": "bls_public_series",
+      "official_url": "https://www.bls.gov/data/",
+      "api_documentation": "https://www.bls.gov/developers/",
+      "license_terms": "Public statistical series; review BLS terms, series notes, and any third-party restrictions before redistribution.",
+      "format": "BLS API JSON; downloadable tables vary.",
+      "approximate_size": "Medium to large across historical series; exact bulk size not verified.",
+      "update_frequency": "Monthly, quarterly, or annual depending on series.",
+      "geographic_coverage": "United States national, regional, and local areas depending on program.",
+      "download_method": "Documented API; API v2 registration key is optional for limited use and should be locally configured if needed.",
+      "access_status": "BLS documentation fetch returned HTTP 403 during this audit; data access was not attempted.",
+      "priority": "medium",
+      "review_items": [
+        "Review official documentation/terms through an authorized channel before use.",
+        "Do not bypass the observed documentation access block."
+      ]
+    },
+    {
+      "rank": 8,
+      "provider": "Ministry of Statistics and Programme Implementation, India",
+      "dataset": "National Accounts Statistics and Periodic Labour Force Survey",
+      "dataset_id": "mospi_national_accounts; mospi_plfs",
+      "official_url": "https://mospi.gov.in/",
+      "license_terms": "Dataset-specific licensing and redistribution terms not verified.",
+      "format": "Official reports/data tables; CSV/XLS/PDF availability varies and must be confirmed per release.",
+      "approximate_size": "Medium to large by release; not measured.",
+      "update_frequency": "Release-specific, commonly annual or periodic.",
+      "geographic_coverage": "India, national and subnational where published.",
+      "download_method": "Official publication or open-data portal only after terms, stable URLs, and machine-readable formats are confirmed.",
+      "access_status": "Candidate only; no data endpoint verified or downloaded.",
+      "priority": "medium",
+      "review_items": [
+        "Verify reuse terms and machine-readable release files.",
+        "Retain definitions, price base, units, and survey metadata."
+      ]
+    },
+    {
+      "rank": 9,
+      "provider": "Reserve Bank of India",
+      "dataset": "Database on Indian Economy (DBIE)",
+      "dataset_id": "rbi_dbie",
+      "official_url": "https://dbie.rbi.org.in/",
+      "license_terms": "Redistribution terms not verified; rights review required.",
+      "format": "Portal tables/downloads; CSV/XLS availability and API support not confirmed.",
+      "approximate_size": "Large across banking, monetary, prices, and national series; not measured.",
+      "update_frequency": "Series-specific, ranging from daily to annual.",
+      "geographic_coverage": "India; some international comparisons.",
+      "download_method": "Official DBIE downloads only after accessible documentation and terms are verified.",
+      "access_status": "Official portal request failed at transport/DNS level during this audit; no retries or alternate access methods used.",
+      "priority": "medium",
+      "review_items": [
+        "Confirm portal availability and redistribution terms before collection.",
+        "Preserve units, revision dates, and table notes."
+      ]
+    },
+    {
+      "rank": 10,
+      "provider": "United Nations Statistics Division",
+      "dataset": "UN National Accounts and SDG indicators",
+      "dataset_id": "un_national_accounts; un_sdg",
+      "official_url": "https://unstats.un.org/",
+      "license_terms": "Data are compiled from different reporting sources; review dataset-level reuse terms and attribution.",
+      "format": "Official database exports and SDMX/API options vary by dataset.",
+      "approximate_size": "Large and dataset-dependent; not measured.",
+      "update_frequency": "Dataset-specific.",
+      "geographic_coverage": "Global countries and territories.",
+      "download_method": "Official portal exports or documented public API, after validating endpoint, license, and completeness metadata.",
+      "access_status": "Candidate only; no data endpoint verified or downloaded.",
+      "priority": "low",
+      "review_items": [
+        "Identify a specific dataset and source-specific terms before acquisition.",
+        "Keep source organization and reported/estimated status fields."
+      ]
+    }
+  ],
+  "next_safe_step": {
+    "dataset_id": "world_bank_wdi:2",
+    "scope": "USA, NY.GDP.MKTP.CD, 2021 only",
+    "command": ".venv\\Scripts\\python.exe -m scripts.datasets.structured_ingest",
+    "large_download_started": false
+  }
+}

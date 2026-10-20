@@ -1,0 +1,20 @@
+[
+  {
+    "source_id": "economic_source_009",
+    "source_url": "https://press.princeton.edu/index.php/books/ebook/9780691281971/the-muqaddimah-pdf",
+    "category": "excluded",
+    "status": "excluded",
+    "reason": "The manager identifies Princeton Muqaddimah as paid/sample-only.",
+    "files": [],
+    "latest_error": null
+  },
+  {
+    "source_id": "economic_source_020",
+    "source_url": "https://www.mheducation.com/highered/product/Advanced-Macroeconomics",
+    "category": "excluded",
+    "status": "excluded",
+    "reason": "The manager identifies the McGraw-Hill publisher page as sample/paid material.",
+    "files": [],
+    "latest_error": null
+  }
+]
